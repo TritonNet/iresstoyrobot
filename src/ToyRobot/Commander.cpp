@@ -64,6 +64,9 @@ void CommanderBase::Launch()
         case cmdREPORT:
             Report();
             break;
+        case cmdEXIT:
+            continue;
+            break;
         case cmdUNKNOWN:
         default:
             m_logger.Error("Unknown command");
@@ -121,7 +124,9 @@ void CommanderBase::Place(std::vector<std::string>& xargs)
 
 void CommanderBase::Move()
 {
-    m_robot.TryMove();
+    const auto sucess = m_robot.TryMove();
+    if (!sucess)
+        m_logger.Error("Move failed.");
 }
 
 void CommanderBase::Report()
@@ -131,7 +136,7 @@ void CommanderBase::Report()
     FacingDirection facingDirection;
 
     m_robot.Report(x, y, facingDirection);
-    m_logger.Info("Output: " + std::to_string(x) + "," + std::to_string(y) + "," + m_facingDirectionStrings[facingDirection]);
+    m_logger.Info("Output: " + std::to_string(x) + "," + std::to_string(y) + "," + ToUpper(m_facingDirectionStrings[facingDirection]));
 }
 
 std::vector<std::string> CommanderBase::Split(const std::string& str, const std::string& delimiter)
@@ -164,6 +169,16 @@ std::string CommanderBase::ToLower(std::string str)
     });
 
     return strlower;
+}
+
+std::string CommanderBase::ToUpper(std::string str)
+{
+    std::string strupper = str;
+    std::for_each(strupper.begin(), strupper.end(), [](char& c) {
+        c = ::toupper(c);
+        });
+
+    return strupper;
 }
 
 bool CommanderBase::TryParseInt(std::string str, int& num)

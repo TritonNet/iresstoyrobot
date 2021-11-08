@@ -43,6 +43,7 @@ protected:
     void Report();
     std::vector<std::string> Split(const std::string& str, const std::string& delimiter);
     std::string ToLower(std::string str);
+    std::string ToUpper(std::string str);
     bool TryParseInt(std::string str, int& num);
 
     const std::map<std::string, Command> m_commands = {
@@ -59,6 +60,7 @@ protected:
         { "south", fdSOUTH },
         { "east", fdEAST },
         { "west", fdWEST },
+        { "unknown", fdUNKNOWN }
     };
 
     std::map<FacingDirection, std::string> m_facingDirectionStrings;

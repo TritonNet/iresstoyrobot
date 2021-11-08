@@ -105,6 +105,12 @@ bool ToyRobot::TryMove()
 
 bool ToyRobot::TryTurnLeft()
 {
+	if (!m_placed)
+	{
+		m_logger.Error("Robot is not placed.");
+		return false;
+	}
+
 	switch (m_facingDirection)
 	{
 	case fdNORTH:
@@ -132,6 +138,12 @@ bool ToyRobot::TryTurnLeft()
 
 bool ToyRobot::TryTurnRight()
 {
+	if (!m_placed)
+	{
+		m_logger.Error("Robot is not placed.");
+		return false;
+	}
+
 	switch (m_facingDirection)
 	{
 	case fdNORTH:
