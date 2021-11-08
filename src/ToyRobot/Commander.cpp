@@ -20,6 +20,9 @@
 
 #include "Commander.h"
 #include <algorithm>
+#include <iostream>
+#include <fstream>
+#include <string>
 
 CommanderBase::CommanderBase(ToyRobot& robot, LoggerBase& logger)
     : m_robot(robot),
@@ -188,12 +191,11 @@ bool CommanderBase::TryParseInt(std::string str, int& num)
     return *end == '\0';
 }
 
-Command ConsoleCommander::GetCommand(std::vector<std::string>& args)
+Command CommanderBase::GetCommand(std::vector<std::string>& args)
 {
     std::cout << "Please enter command : ";
 
-    std::string userInput;
-    std::getline(std::cin, userInput);
+    const auto userInput = ReadLine();
 
     const auto cmdArgs = Split(userInput, " ");
     if (cmdArgs.size() == 0)
@@ -207,4 +209,32 @@ Command ConsoleCommander::GetCommand(std::vector<std::string>& args)
         args.push_back(cmdArgs[idx]);
 
     return commandItr->second;
+}
+
+std::string ConsoleCommander::ReadLine()
+{
+    std::string userInput;
+    std::getline(std::cin, userInput);
+
+    return userInput;
+}
+
+std::string FileCommander::ReadLine()
+{
+    std::string line;
+    std::ifstream myfile("example.txt");
+    if (myfile.is_open())
+    {
+        while (getline(myfile, line))
+        {
+            std::cout << line << '\n';
+        }
+        myfile.close();
+    }
+
+
+    std::string line;
+    std::getline(m_filestream, line);
+
+    return line;
 }

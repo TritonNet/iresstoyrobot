@@ -25,8 +25,8 @@
 #include <vector>
 #include "ToyRobot.h"
 #include "Commands.h"
-#include <iostream>
 #include "Logger.h"
+#include <fstream>
 
 class CommanderBase
 {
@@ -37,6 +37,7 @@ public:
 
 protected:
     Command virtual GetCommand(std::vector<std::string>& args) = 0;
+    std::string virtual ReadLine() = 0;
 
     void Place(std::vector<std::string>& args);
     void Move();
@@ -76,5 +77,26 @@ public:
         : CommanderBase(robot, logger)
     {}
 
-    Command GetCommand(std::vector<std::string>& args) override;
+protected:
+    std::string ReadLine() override;
+};
+
+class FileCommander : public CommanderBase
+{
+public:
+    FileCommander(std::string path, ToyRobot& robot, LoggerBase& logger)
+        : CommanderBase(robot, logger),
+        m_filestream(path)
+    { }
+
+    ~FileCommander()
+    {
+        m_filestream.close();
+    }
+
+protected:
+    std::string ReadLine() override;
+
+private:
+    std::ifstream m_filestream;
 };
