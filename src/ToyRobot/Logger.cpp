@@ -38,22 +38,21 @@ std::string LoggerBase::FormatLogMsg(std::string msgType, std::string msg)
 		<< " - "
 		<< msgType
 		<< " - "
-		<< msg
-		<< std::endl;
+		<< msg;
 
 	return sstream.str();
 }
 
 
-void ConsoleLogger::Print(std::string msgType, std::string msg)
+void ConsoleLogger::Print(std::string msgType, std::string msg, std::string end)
 {
-	std::cout << FormatLogMsg(msgType, msg) << std::endl;
+	std::cout << FormatLogMsg(msgType, msg) << end;
 }
 
-void FileLogger::Print(std::string msgType, std::string msg)
+void FileLogger::Print(std::string msgType, std::string msg, std::string end)
 {
 	std::ofstream myfile;
-	myfile.open(m_path);
-	myfile << FormatLogMsg(msgType, msg) << "\n";
+	myfile.open(m_path, std::ios_base::app);
+	myfile << FormatLogMsg(msgType, msg) << end;
 	myfile.close();
 }

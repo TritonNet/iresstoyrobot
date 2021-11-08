@@ -110,7 +110,7 @@ void CommanderBase::Place(std::vector<std::string>& xargs)
         return;
     }
 
-    const auto facingDirectionItr = m_facingDirections.find(args[2]);
+    const auto facingDirectionItr = m_facingDirections.find(ToLower(args[2]));
     if (facingDirectionItr == m_facingDirections.end())
     {
         m_logger.Error("Invalid facing direction: " + args[2]);
@@ -193,11 +193,13 @@ bool CommanderBase::TryParseInt(std::string str, int& num)
 
 Command CommanderBase::GetCommand(std::vector<std::string>& args)
 {
-    std::cout << "Please enter command : ";
+    m_logger.Info("Please enter command : ", "");
 
-    const auto userInput = ReadLine();
+    std::string input;
+    if (!TryReadLine(input))
+        return cmdEXIT;
 
-    const auto cmdArgs = Split(userInput, " ");
+    const auto cmdArgs = Split(input, " ");
     if (cmdArgs.size() == 0)
         return cmdUNKNOWN;
 
@@ -211,30 +213,20 @@ Command CommanderBase::GetCommand(std::vector<std::string>& args)
     return commandItr->second;
 }
 
-std::string ConsoleCommander::ReadLine()
+bool ConsoleCommander::TryReadLine(std::string& input)
 {
-    std::string userInput;
-    std::getline(std::cin, userInput);
+    std::getline(std::cin, input);
 
-    return userInput;
+    return true;
 }
 
-std::string FileCommander::ReadLine()
+bool FileCommander::TryReadLine(std::string& input)
 {
-    std::string line;
-    std::ifstream myfile("example.txt");
-    if (myfile.is_open())
-    {
-        while (getline(myfile, line))
-        {
-            std::cout << line << '\n';
-        }
-        myfile.close();
-    }
+    if (!m_filestream.is_open())
+        return false;
 
+    if (!std::getline(m_filestream, input))
+        return false;
 
-    std::string line;
-    std::getline(m_filestream, line);
-
-    return line;
+    return true;
 }

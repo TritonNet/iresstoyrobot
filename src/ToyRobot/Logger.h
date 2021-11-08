@@ -25,30 +25,30 @@
 class LoggerBase
 {
 public:
-    void Error(std::string msg)
+    void Error(std::string msg, std::string end = "\n")
     { 
-        Print("ERROR", msg);
+        Print("ERROR", msg, end);
     }
 
-    void Info(std::string msg)
+    void Info(std::string msg, std::string end = "\n")
     {
-        Print("INFO", msg);
+        Print("INFO", msg, end);
     }
 
-    void Warn(std::string msg)
+    void Warn(std::string msg, std::string end = "\n")
     {
-        Print("WARN", msg);
+        Print("WARN", msg, end);
     }
 
 protected:
-    void virtual Print(std::string msgType, std::string msg) = 0;
+    void virtual Print(std::string msgType, std::string msg, std::string end) = 0;
     std::string FormatLogMsg(std::string msgType, std::string msg);
 };
 
 class ConsoleLogger : public LoggerBase
 {
 protected:
-    void Print(std::string msgType, std::string msg) override;
+    void Print(std::string msgType, std::string msg, std::string end) override;
 };
 
 class FileLogger : public LoggerBase
@@ -59,7 +59,7 @@ public:
     {}
 
 protected:
-    void Print(std::string msgType, std::string msg) override;
+    void Print(std::string msgType, std::string msg, std::string end) override;
 
 private:
     const std::string m_path;

@@ -19,6 +19,7 @@
  */
 
 #pragma once
+
 #include <iostream>
 #include <string>
 #include <map>
@@ -28,25 +29,75 @@
 #include "Logger.h"
 #include <fstream>
 
+// Commander Base class. This class provide abstraction for console and file commanders.
 class CommanderBase
 {
 public:
     CommanderBase(ToyRobot& robot, LoggerBase& logger);
-
     void Launch();
 
 protected:
-    Command virtual GetCommand(std::vector<std::string>& args) = 0;
-    std::string virtual ReadLine() = 0;
+    /// <summary>
+    /// Try to read a single line from the input stream.
+    /// </summary>
+    /// <param name="input">string reference for loading the input value</param>
+    /// <returns>[true] Line is read sucessfully. [false] input stream is closed</returns>
+    bool virtual TryReadLine(std::string& input) = 0;
 
+private:
+    /// <summary>
+    /// Get a single command from user
+    /// </summary>
+    /// <param name="args">List of user provided input arguments.</param>
+    /// <returns>The command</returns>
+    Command GetCommand(std::vector<std::string>& args);
+
+    /// <summary>
+    /// Convey the place command to the robot.
+    /// </summary>
+    /// <param name="args">User arguments</param>
     void Place(std::vector<std::string>& args);
+
+    /// <summary>
+    /// Convey move command to the robot.
+    /// </summary>
     void Move();
+
+    /// <summary>
+    /// Convey report command and print output on the user stream.
+    /// </summary>
     void Report();
+
+    /// <summary>
+    /// Helper function for splitting string by given delimiter.
+    /// </summary>
     std::vector<std::string> Split(const std::string& str, const std::string& delimiter);
+
+    /// <summary>
+    /// Helper function for converting string to lower case.
+    /// </summary>
+    /// <param name="str">Input string</param>
+    /// <returns>Output string converted to lower-case</returns>
     std::string ToLower(std::string str);
+
+    /// <summary>
+    /// Helper function for converting string to upper case
+    /// </summary>
+    /// <param name="str">Input string</param>
+    /// <returns>Output string converted to upper-case</returns>
     std::string ToUpper(std::string str);
+
+    /// <summary>
+    /// Try convert the provided string to an integer.
+    /// </summary>
+    /// <param name="str">Input string</param>
+    /// <param name="num">result integer if conversion if sucess</param>
+    /// <returns>[true] conversion sucess. [false] conversion failed.</returns>
     bool TryParseInt(std::string str, int& num);
 
+    /// <summary>
+    /// Mapping of commands and their internal representation.
+    /// </summary>
     const std::map<std::string, Command> m_commands = {
         { "place", cmdPLACE },
         { "move", cmdMOVE },
@@ -56,6 +107,9 @@ protected:
         { "exit", cmdEXIT }
     };
 
+    /// <summary>
+    /// Mapping of robot's facing directions and their internal representation.
+    /// </summary>
     const std::map<std::string, FacingDirection> m_facingDirections = {
         { "north", fdNORTH },
         { "south", fdSOUTH },
@@ -64,12 +118,18 @@ protected:
         { "unknown", fdUNKNOWN }
     };
 
+    /// <summary>
+    /// Inverse mapping of robot's facing direction
+    /// </summary>
     std::map<FacingDirection, std::string> m_facingDirectionStrings;
 
     ToyRobot& m_robot;
     LoggerBase& m_logger;
 };
 
+/// <summary>
+/// Console commander which can get commands from console
+/// </summary>
 class ConsoleCommander : public CommanderBase
 {
 public:
@@ -77,10 +137,18 @@ public:
         : CommanderBase(robot, logger)
     {}
 
+    /// <summary>
+    /// Copy constructor is not allowed
+    /// </summary>
+    ConsoleCommander(const ConsoleCommander&) = delete;
+
 protected:
-    std::string ReadLine() override;
+    bool TryReadLine(std::string& input) override;
 };
 
+/// <summary>
+/// File commander which can get commands from file
+/// </summary>
 class FileCommander : public CommanderBase
 {
 public:
@@ -89,13 +157,18 @@ public:
         m_filestream(path)
     { }
 
+    /// <summary>
+    /// Copy constructor is not allowed
+    /// </summary>
+    FileCommander(const FileCommander&) = delete;
+
     ~FileCommander()
     {
         m_filestream.close();
     }
 
 protected:
-    std::string ReadLine() override;
+    bool TryReadLine(std::string& input) override;
 
 private:
     std::ifstream m_filestream;

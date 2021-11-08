@@ -23,12 +23,33 @@
 #include "Logger.h"
 #include "Commander.h"
 
-int main()
+int main(int argc, char** argv)
 {
-    ConsoleLogger logger;
-    ToyRobot robot(logger);
+    if (argc > 1)
+    {
+        if (argc != 3)
+        {
+            std::cout << "Invalid number of arguments. Console aruments should be in the form of '>toyrobot.exe inputfile.txt outputfile.txt'" << std::endl;
+            return -1;
+        }
 
-    ConsoleCommander commander(robot, logger);
-    
-    commander.Launch();
+        std::string inputFile(argv[1]);
+        std::string outputFile(argv[2]);
+
+        FileLogger fileLogger(outputFile);
+        ToyRobot robot(fileLogger);
+
+        FileCommander commander(inputFile, robot, fileLogger);
+        commander.Launch();
+    }
+    else
+    {
+        ConsoleLogger logger;
+        ToyRobot robot(logger);
+
+        ConsoleCommander commander(robot, logger);
+        commander.Launch();
+    }
+
+    return 0;
 }
