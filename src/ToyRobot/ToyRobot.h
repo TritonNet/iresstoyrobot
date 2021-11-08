@@ -21,7 +21,28 @@
 #pragma once
 
 #include <stdint.h>
+#include "FacingDirection.h"
+#include "Logger.h"
 
 class ToyRobot
 {
+public:
+	ToyRobot(LoggerBase& logger);
+	bool TryPlace(uint8_t x, uint8_t y, FacingDirection facingDirection);
+	bool TryMove();
+	bool TryTurnRight();
+	bool TryTurnLeft();
+	void Report(uint8_t& x, uint8_t& y, FacingDirection& facingDirection);
+
+private:
+	uint8_t m_x = 0;
+	uint8_t m_y = 0;
+
+	const uint8_t m_xmax = 5;
+	const uint8_t m_ymax = 5;
+
+	FacingDirection m_facingDirection = fdUNKNOWN;
+	bool m_placed = false;
+
+	LoggerBase& m_logger;
 };

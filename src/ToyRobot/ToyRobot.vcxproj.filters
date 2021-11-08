@@ -21,9 +21,21 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Logger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ToyRobot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FacingDirection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Commands.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
