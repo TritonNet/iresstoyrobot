@@ -26,4 +26,4 @@ This toy robot can be run via the commands provided either through the console w
 	The `commands.txt` file should contain the commands in the order that they should execute.
 	The `output.txt` file will be created if not exists and the output logs will be appended to the file.
 
-The robot commands are as per the [instruction.pdf](docs/instructions.pdf) file.
+The robot commands are as per the [instruction.pdf](doc/instructions.pdf) file.
